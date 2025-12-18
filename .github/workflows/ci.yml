@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./c/netspy
+        working-directory: ./cmd/netspy
 
     steps:
     - name: 📥 Descargar código
