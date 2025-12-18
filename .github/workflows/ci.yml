@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: /cmd/netspy # Asegúrate de que esta ruta sea real
+        working-directory: go-sysadmin-toolkit/cmd/netspy # Asegúrate de que esta ruta sea real
 
     steps:
     - name: 📥 Descargar código
@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: /cmd/netspy
+        working-directory: go-sysadmin-toolkit/cmd/netspy
 
     steps:
     - name: 📥 Descargar código
