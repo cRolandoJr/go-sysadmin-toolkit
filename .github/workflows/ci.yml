@@ -1,36 +1,43 @@
-name: CI NetSpy 🕵️‍♂️ (Debug Mode)
+name: CI NetSpy 🕵️‍♂️
 
 on:
-  workflow_dispatch: # Botón manual
+  workflow_dispatch:
   push:
     branches: [ "main" ]
+    paths:
+      - 'cmd/netspy/**' # Corregido: cmd en lugar de c
 
 jobs:
-  debug-explorer:
+  build-go:
     runs-on: ubuntu-latest
-    # ALERTA: He quitado el "defaults: working-directory" para que no crashee
-    
+    defaults:
+      run:
+        working-directory: ./cmd/netspy # <--- ¡Aquí estaba el error!
+
     steps:
     - name: 📥 Descargar código
       uses: actions/checkout@v4
 
-    - name: 🕵️‍♂️ LA HORA DE LA VERDAD (Listar todo)
-      run: |
-        echo "📂 Estoy en la raiz del runner:"
-        pwd
-        echo "🌳 Árbol de directorios completo:"
-        ls -R
-        # Este comando nos mostrará CADA carpeta que existe en tu repo.
+    - name: 🐹 Instalar Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.23'
 
-    - name: 🐹 Intentar compilar (Manually cd)
-      # Intentamos entrar manualmente para ver si falla aquí
-      run: |
-        echo "🐢 Intentando entrar a c/netspy..."
-        cd c/netspy || echo "❌ NO EXISTE c/netspy"
-        cd ../..
-        
-        echo "🐢 Intentando entrar a cmd/netspy..."
-        cd cmd/netspy || echo "❌ NO EXISTE cmd/netspy"
-        
-        echo "🐢 Intentando entrar a netspy (en raiz)..."
-        cd netspy || echo "❌ NO EXISTE netspy en raiz"
+    # Como tu go.mod está en la raiz pero el codigo en cmd/netspy, 
+    # a veces Go necesita ayuda. Vamos a probar compilación directa primero.
+    - name: 🔨 Compilar
+      run: go build -v .
+
+  build-docker:
+    needs: build-go
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./cmd/netspy # <--- Corregido también aquí
+
+    steps:
+    - name: 📥 Descargar código
+      uses: actions/checkout@v4
+
+    - name: 🐳 Construir Imagen Docker
+      run: docker build .
