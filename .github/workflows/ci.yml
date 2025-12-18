@@ -1,23 +1,31 @@
 name: CI NetSpy 🕵️‍♂️
 
 on:
-  # 1. Botón Manual: Te permite correrlo con un clic desde la web
-  workflow_dispatch:
-  
-  # 2. Push: Corre en cualquier cambio a la rama main (quitamos el filtro de paths por ahora)
+  workflow_dispatch: # Botón manual
   push:
     branches: [ "main" ]
 
 jobs:
   build-go:
     runs-on: ubuntu-latest
+    
+    # IMPORTANTE: Asegúrate de que esta ruta coincida con TU repo (¿es 'c' o 'cmd'?)
     defaults:
       run:
-        working-directory: go-sysadmin-toolkit/cmd/netspy # Asegúrate de que esta ruta sea real
+        working-directory: c/netspy 
 
     steps:
     - name: 📥 Descargar código
       uses: actions/checkout@v4
+
+    # --- PASO DE DEBUG NUEVO ---
+    - name: 🕵️‍♂️ DEBUG - Listar archivos
+      run: |
+        echo "Estoy en la ruta: $(pwd)"
+        echo "Listando todo el repositorio:"
+        ls -R ../.. 
+      # Usamos ../.. para subir a la raiz y ver todo el arbol de carpetas
+    # ---------------------------
 
     - name: 🐹 Instalar Go
       uses: actions/setup-go@v5
@@ -35,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: go-sysadmin-toolkit/cmd/netspy
+        working-directory: c/netspy
 
     steps:
     - name: 📥 Descargar código
