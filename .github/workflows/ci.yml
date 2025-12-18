@@ -6,11 +6,11 @@ on:
     # Esto hace que el pipeline solo corra si modificas archivos dentro de netspy
     # (Para no gastar recursos si tocas otras cosas del toolkit)
     paths:
-      - 'c/netspy/**'
+      - 'cmd/netspy/**'
   pull_request:
     branches: [ "main" ]
     paths:
-      - 'c/netspy/**'
+      - 'cmd/netspy/**'
 
 jobs:
   # Tarea 1: Verificar que Go compila
@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./c/netspy  # <--- ¡Aquí está el truco!
+        working-directory: ./cmd/netspy  # <--- ¡Aquí está el truco!
 
     steps:
     - name: 📥 Descargar código
@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./c/netspy # <--- ¡Aquí también!
+        working-directory: ./cmd/netspy # <--- ¡Aquí también!
 
     steps:
     - name: 📥 Descargar código
