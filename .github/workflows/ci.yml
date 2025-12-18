@@ -1,0 +1,52 @@
+name: CI NetSpy 🕵️‍♂️
+
+on:
+  push:
+    branches: [ "main" ]
+    # Esto hace que el pipeline solo corra si modificas archivos dentro de netspy
+    # (Para no gastar recursos si tocas otras cosas del toolkit)
+    paths:
+      - 'c/netspy/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'c/netspy/**'
+
+jobs:
+  # Tarea 1: Verificar que Go compila
+  build-go:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./c/netspy  # <--- ¡Aquí está el truco!
+
+    steps:
+    - name: 📥 Descargar código
+      uses: actions/checkout@v4
+
+    - name: 🐹 Instalar Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.23'
+
+    - name: ⬇️ Bajar dependencias
+      run: go mod download
+
+    - name: 🔨 Compilar
+      run: go build -v .
+
+  # Tarea 2: Verificar que Docker construye la imagen
+  build-docker:
+    needs: build-go
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./c/netspy # <--- ¡Aquí también!
+
+    steps:
+    - name: 📥 Descargar código
+      uses: actions/checkout@v4
+
+    - name: 🐳 Construir Imagen Docker
+      # El punto final (.) se refiere al working-directory definido arriba
+      run: docker build .
